@@ -4,6 +4,8 @@ use crate::{
     DatabaseError,
 };
 
+/// 实现Send的类型可以在线程间安全的传递其所有权, 实现Sync的类型可以在线程间安全的共享(通过引用)
+/// RO Tx
 /// Read only transaction
 pub trait DbTx: Send + Sync {
     /// Cursor type for this read-only transaction
@@ -29,6 +31,7 @@ pub trait DbTx: Send + Sync {
 }
 
 /// Read write transaction that allows writing to database
+/// RW Tx
 pub trait DbTxMut: Send + Sync {
     /// Read-Write Cursor type
     type CursorMut<T: Table>: DbCursorRW<T> + DbCursorRO<T> + Send + Sync;

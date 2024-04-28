@@ -10,6 +10,7 @@ use crate::{
 };
 
 /// A read-only cursor over table `T`.
+/// 定义ReadOnly特性
 pub trait DbCursorRO<T: Table> {
     /// Positions the cursor at the first entry in the table, returning it.
     fn first(&mut self) -> PairResult<T>;
@@ -62,6 +63,7 @@ pub trait DbCursorRO<T: Table> {
 }
 
 /// A read-only cursor over the dup table `T`.
+/// Dup是什么意思？
 pub trait DbDupCursorRO<T: DupSort> {
     /// Positions the cursor at the next KV pair of the table, returning it.
     fn next_dup(&mut self) -> PairResult<T>;
@@ -101,6 +103,7 @@ pub trait DbDupCursorRO<T: DupSort> {
 }
 
 /// Read write cursor over table.
+/// 定义读写特性
 pub trait DbCursorRW<T: Table> {
     /// Database operation that will update an existing row if a specified value already
     /// exists in a table, and insert a new row if the specified value doesn't already exist
@@ -136,10 +139,12 @@ pub trait DbDupCursorRW<T: DupSort> {
 /// Reason why we have two lifetimes is to distinguish between `'cursor` lifetime
 /// and inherited `'tx` lifetime. If there is only one, rust would short circle
 /// the Cursor lifetime and it wouldn't be possible to use Walker.
+/// 有两个生命周期，一个是`cursor`的，一个是`tx`实现的
 pub struct Walker<'cursor, T: Table, CURSOR: DbCursorRO<T>> {
     /// Cursor to be used to walk through the table.
     cursor: &'cursor mut CURSOR,
     /// `(key, value)` where to start the walk.
+    /// 开始位置
     start: IterPairResult<T>,
 }
 
@@ -167,11 +172,13 @@ impl<'cursor, T: Table, CURSOR: DbCursorRO<T>> Iterator for Walker<'cursor, T, C
 
 impl<'cursor, T: Table, CURSOR: DbCursorRO<T>> Walker<'cursor, T, CURSOR> {
     /// construct Walker
+    /// 构建walker
     pub fn new(cursor: &'cursor mut CURSOR, start: IterPairResult<T>) -> Self {
         Self { cursor, start }
     }
 
     /// convert current [`Walker`] to [`ReverseWalker`] which iterates reversely
+    /// 逆转walker
     pub fn rev(self) -> ReverseWalker<'cursor, T, CURSOR> {
         let start = self.cursor.current().transpose();
         ReverseWalker::new(self.cursor, start)

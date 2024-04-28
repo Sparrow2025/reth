@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
 /// Trait that will transform the data to be saved in the DB in a (ideally) compressed format
+/// 压缩格式数据 的 Trait
 pub trait Compress: Send + Sync + Sized + Debug {
     /// Compressed type.
     type Compressed: bytes::BufMut
