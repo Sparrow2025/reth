@@ -244,52 +244,66 @@ macro_rules! tables {
 
 tables! {
     /// Stores the header hashes belonging to the canonical chain.
+    /// 存储规范链的 header hash
     table CanonicalHeaders<Key = BlockNumber, Value = HeaderHash>;
 
     /// Stores the total difficulty from a block header.
+    /// 存储区块头中的总难度
     table HeaderTerminalDifficulties<Key = BlockNumber, Value = CompactU256>;
 
     /// Stores the block number corresponding to a header.
+    /// block hash -> block number
     table HeaderNumbers<Key = BlockHash, Value = BlockNumber>;
 
     /// Stores header bodies.
+    /// 存储区块的header信息
     table Headers<Key = BlockNumber, Value = Header>;
 
     /// Stores block indices that contains indexes of transaction and the count of them.
     ///
     /// More information about stored indices can be found in the [`StoredBlockBodyIndices`] struct.
+    /// 存储区块的指标，包含 transaction index 和 transaction number
     table BlockBodyIndices<Key = BlockNumber, Value = StoredBlockBodyIndices>;
 
     /// Stores the uncles/ommers of the block.
+    /// 存储区块的uncles/ommers区块
     table BlockOmmers<Key = BlockNumber, Value = StoredBlockOmmers>;
 
     /// Stores the block withdrawals.
+    /// 存储区块的withdrawals信息（质押退出）
     table BlockWithdrawals<Key = BlockNumber, Value = StoredBlockWithdrawals>;
 
     /// Canonical only Stores the transaction body for canonical transactions.
+    /// 存储transaction body
     table Transactions<Key = TxNumber, Value = TransactionSignedNoHash>;
 
     /// Stores the mapping of the transaction hash to the transaction number.
+    /// 存储 tx hash -> txNumber 的映射
     table TransactionHashNumbers<Key = TxHash, Value = TxNumber>;
 
     /// Stores the mapping of transaction number to the blocks number.
     ///
     /// The key is the highest transaction ID in the block.
+    /// 存储 tx number -> block number 的映射
     table TransactionBlocks<Key = TxNumber, Value = BlockNumber>;
 
     /// Canonical only Stores transaction receipts.
+    /// 收据信息
     table Receipts<Key = TxNumber, Value = Receipt>;
 
     /// Stores all smart contract bytecodes.
     /// There will be multiple accounts that have same bytecode
     /// So we would need to introduce reference counter.
     /// This will be small optimization on state.
+    /// 存储合约代码，会出现多个account拥有相同代码的情况（会有引用计数）
     table Bytecodes<Key = B256, Value = Bytecode>;
 
     /// Stores the current state of an [`Account`].
+    /// 存储账户状态
     table PlainAccountState<Key = Address, Value = Account>;
 
     /// Stores the current value of a storage key.
+    /// 存储某个地址当前存储的key
     table PlainStorageState<Key = Address, Value = StorageEntry, SubKey = B256>;
 
     /// Stores pointers to block changeset with changes for each account key.
@@ -310,6 +324,7 @@ tables! {
     /// * If there were no shard we would get `None` entry or entry of different storage key.
     ///
     /// Code example can be found in `reth_provider::HistoricalStateProviderRef`
+    /// 根据账户查询相关的blockNumber
     table AccountsHistory<Key = ShardedKey<Address>, Value = BlockNumberList>;
 
     /// Stores pointers to block number changeset with changes for each storage key.
@@ -330,31 +345,37 @@ tables! {
     /// * If there were no shard we would get `None` entry or entry of different storage key.
     ///
     /// Code example can be found in `reth_provider::HistoricalStateProviderRef`
+    /// 根据key查询有变更的 blockNumber
     table StoragesHistory<Key = StorageShardedKey, Value = BlockNumberList>;
 
     /// Stores the state of an account before a certain transaction changed it.
     /// Change on state can be: account is created, selfdestructed, touched while empty
     /// or changed balance,nonce.
+    /// 存储account在特定事务变更之前的状态
     table AccountChangeSets<Key = BlockNumber, Value = AccountBeforeTx, SubKey = Address>;
 
     /// Stores the state of a storage key before a certain transaction changed it.
     /// If [`StorageEntry::value`] is zero, this means storage was not existing
     /// and needs to be removed.
+    /// 存储storage key在特定tx变更之前的状态
     table StorageChangeSets<Key = BlockNumberAddress, Value = StorageEntry, SubKey = B256>;
 
     /// Stores the current state of an [`Account`] indexed with `keccak256Address`
     /// This table is in preparation for merkelization and calculation of state root.
     /// We are saving whole account data as it is needed for partial update when
     /// part of storage is changed. Benefit for merkelization is that hashed addresses are sorted.
+    /// 以 keccak256Address(address) 为 Key存储账户状态
     table HashedAccounts<Key = B256, Value = Account>;
 
     /// Stores the current storage values indexed with `keccak256Address` and
     /// hash of storage key `keccak256key`.
     /// This table is in preparation for merkelization and calculation of state root.
     /// Benefit for merklization is that hashed addresses/keys are sorted.
+    /// 存储以“keccak256Address”和存储密钥“keccak256key”的哈希为索引的当前存储值。此表是为合并和计算状态根做准备的。merklization 的好处是可以对经过哈希处理的地址密钥进行排序
     table HashedStorages<Key = B256, Value = StorageEntry, SubKey = B256>;
 
     /// Stores the current state's Merkle Patricia Tree.
+    /// 存储当前状态的MPT
     table AccountsTrie<Key = StoredNibbles, Value = StoredBranchNode>;
 
     /// From HashedAddress => NibblesSubKey => Intermediate value
@@ -363,18 +384,23 @@ tables! {
     /// Stores the transaction sender for each canonical transaction.
     /// It is needed to speed up execution stage and allows fetching signer without doing
     /// transaction signed recovery
+    /// 存储tx发送方
     table TransactionSenders<Key = TxNumber, Value = Address>;
 
     /// Stores the highest synced block number and stage-specific checkpoint of each stage.
+    /// 存储每个阶段的最高同步块号和特定于阶段的检查点
     table StageCheckpoints<Key = StageId, Value = StageCheckpoint>;
 
     /// Stores arbitrary data to keep track of a stage first-sync progress.
+    /// 存储任意数据以跟踪阶段的首次同步进度
     table StageCheckpointProgresses<Key = StageId, Value = Vec<u8>>;
 
     /// Stores the highest pruned block number and prune mode of each prune segment.
+    /// 存储每个修剪segment中 最高的block number 以及 prune mode
     table PruneCheckpoints<Key = PruneSegment, Value = PruneCheckpoint>;
 
     /// Stores the history of client versions that have accessed the database with write privileges by unix timestamp in seconds.
+    /// timestamp -> client version
     table VersionHistory<Key = u64, Value = ClientVersion>;
 }
 

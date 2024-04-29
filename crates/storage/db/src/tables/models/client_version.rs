@@ -27,6 +27,7 @@ impl Compact for ClientVersion {
     where
         B: bytes::BufMut + AsMut<[u8]>,
     {
+        // Self：在 Rust 中，Self 表示当前类型。在结构体或枚举的方法中，Self 表示的是该结构体或枚举本身的类型
         let Self { version, git_sha, build_timestamp } = self;
         version.into_bytes().to_compact(buf);
         git_sha.into_bytes().to_compact(buf);

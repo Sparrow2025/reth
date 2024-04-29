@@ -94,6 +94,7 @@ use std::path::Path;
 
 /// Creates a new database at the specified path if it doesn't exist. Does NOT create tables. Check
 /// [`init_db`].
+/// 如果在指定路径上没有找到数据库，就创建数据库，不会创建表
 pub fn create_db<P: AsRef<Path>>(path: P, args: DatabaseArguments) -> eyre::Result<DatabaseEnv> {
     use crate::version::{check_db_version_file, create_db_version_file, DatabaseVersionError};
 

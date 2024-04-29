@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 pub type TableRawRow<T> = (RawKey<<T as Table>::Key>, RawValue<<T as Table>::Value>);
 
 /// Raw table that can be used to access any table and its data in raw mode.
+/// Raw table可以访问任意table，并且它的数据是raw模式，这对延迟decoding/encoding很有帮助
 /// This is useful for delayed decoding/encoding of data.
 #[derive(Default, Copy, Clone, Debug)]
 pub struct RawTable<T: Table> {
