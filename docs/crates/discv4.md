@@ -20,7 +20,9 @@ As mentioned in the network and stages chapters, when the node is first started 
     }
 ```
 
-During this process, a new `NetworkManager` is created through the `NetworkManager::new()` function, which starts the discovery protocol through a handful of newly spawned tasks. Lets take a look at how this actually works under the hood. 
+During this process, a new `NetworkManager` is created through the `NetworkManager::new()` function, 
+which starts the discovery protocol through a handful of newly spawned tasks. 
+Lets take a look at how this actually works under the hood. 
 
 [File: crates/net/network/src/manager.rs](https://github.com/paradigmxyz/reth/blob/main/crates/net/network/src/manager.rs#L147)
 ```rust ignore
@@ -57,7 +59,9 @@ where
 }
 ```
 
-First, the `NetworkConfig` is deconstructed and the `disc_config` is updated to merge configured [bootstrap nodes](https://github.com/paradigmxyz/reth/blob/main/crates/net/discv4/src/bootnodes.rs#L8) and add the `forkid` to adhere to [EIP 868](https://eips.ethereum.org/EIPS/eip-868). This updated configuration variable is then passed into the `Discovery::new()` function. Note that `Discovery` is a catch all for all discovery services, which include discv4, DNS discovery and others in the future.
+First, the `NetworkConfig` is deconstructed and the `disc_config` is updated to merge configured [bootstrap nodes](https://github.com/paradigmxyz/reth/blob/main/crates/net/discv4/src/bootnodes.rs#L8) and add the `forkid` to adhere to [EIP 868](https://eips.ethereum.org/EIPS/eip-868). 
+This updated configuration variable is then passed into the `Discovery::new()` function. 
+Note that `Discovery` is a catch all for all discovery services, which include discv4, DNS discovery and others in the future.
 
 [File: crates/net/network/src/discovery.rs](https://github.com/paradigmxyz/reth/blob/main/crates/net/network/src/discovery.rs#L51)
 ```rust ignore
@@ -98,11 +102,21 @@ impl Discovery {
 }
 ```
 
-Within this function, the [Ethereum Node Record](https://github.com/ethereum/devp2p/blob/master/enr.md) is created. Participants in the discovery protocol are expected to maintain a node record (ENR) containing up-to-date information of different nodes in the network. All records must use the "v4" identity scheme. Other nodes may request the local record at any time by sending an ["ENRRequest" packet](https://github.com/ethereum/devp2p/blob/master/discv4.md#enrrequest-packet-0x05).
+Within this fuction, the [Ethereum Node Record](https://github.com/ethereum/devp2p/blob/master/enr.md) is created. 
+Participants in the discovery protocol are expected to maintain a node record (ENR) containing up-to-date information of different nodes in the network. 
+All records must use the "v4" identity scheme. 
+Other nodes may request the local record at any time by sending an ["ENRRequest" packet](https://github.com/ethereum/devp2p/blob/master/discv4.md#enrrequest-packet-0x05).
 
-The `NodeRecord::from_secret_key()` takes the socket address used for discovery and the secret key. The secret key is used to derive a `secp256k1` public key and the peer id is then derived from the public key. These values are then used to create an ENR. Ethereum Node Records are used to locate and communicate with other nodes in the network.
+The `NodeRecord::from_secret_key()` takes the socket address used for discovery and the secret key. 
+The secret key is used to derive a `secp256k1` public key and the peer id is then derived from the public key. 
+These values are then used to create an ENR. 
+Ethereum Node Records are used to locate and communicate with other nodes in the network.
 
-If the `discv4_config` supplied to the `Discovery::new()` function is `None`, the discv4 service will not be spawned. In this case, no new peers will be discovered across the network. The node will have to rely on manually added peers. However, if the `discv4_config` contains a `Some(Discv4Config)` value, then the `Discv4::bind()` function is called to bind to a new UdpSocket and create the disc_v4 service.
+If the `discv4_config` supplied to the `Discovery::new()` function is `None`, the discv4 service will not be spawned. 
+In this case, no new peers will be discovered across the network. 
+The node will have to rely on manually added peers. 
+
+However, if the `discv4_config` contains a `Some(Discv4Config)` value, then the `Discv4::bind()` function is called to bind to a new UdpSocket and create the disc_v4 service.
 
 [File: crates/net/discv4/src/lib.rs](https://github.com/paradigmxyz/reth/blob/main/crates/net/discv4/src/lib.rs#L188)
 ```rust ignore

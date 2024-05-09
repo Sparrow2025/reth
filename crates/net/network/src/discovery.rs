@@ -62,6 +62,9 @@ impl Discovery {
         dns_discovery_config: Option<DnsDiscoveryConfig>,
     ) -> Result<Self, NetworkError> {
         // setup discv4
+        // 这里创建ETH Node Record,这是 p2p 的开放格式 连接信息。节点记录通常包含节点的网络端点， 即节点的 IP 地址和端口。
+        // 其它节点可以通过 ENRRequest 来请求ENR
+        // 以太坊节点记录用于定位网络中的其他节点并与之通信
         let local_enr = NodeRecord::from_secret_key(discovery_addr, &sk);
         let (discv4, discv4_updates, _discv4_service) = if let Some(disc_config) = discv4_config {
             let (discv4, mut discv4_service) =
@@ -89,7 +92,8 @@ impl Discovery {
             } else {
                 (None, None, None)
             };
-
+        // 如果 discv4为None则不会产生 discv4 service, 这种情况下不会发现peers. 节点就会依赖手动添加的节点
+        //
         Ok(Self {
             discovery_listeners: Default::default(),
             local_enr,

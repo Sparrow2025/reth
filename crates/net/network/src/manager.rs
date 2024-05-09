@@ -190,14 +190,14 @@ where
             NetworkError::from_io_error(err, ServiceKind::Listener(listener_addr))
         })?;
         let listener_address = Arc::new(Mutex::new(incoming.local_address()));
-
+        // 这里更新配置，添加启动节点，以及 forkid
         discovery_v4_config = discovery_v4_config.map(|mut disc_config| {
             // merge configured boot nodes
             disc_config.bootstrap_nodes.extend(boot_nodes.clone());
             disc_config.add_eip868_pair("eth", status.forkid);
             disc_config
         });
-
+        // 通过最新的配置，创建discovery,包括discv4,DNS discovery, ...
         let discovery =
             Discovery::new(discovery_addr, secret_key, discovery_v4_config, dns_discovery_config)
                 .await?;

@@ -602,13 +602,16 @@ impl<Ext: RethCliExt> NodeCommand<Ext> {
         Pool: TransactionPool + Unpin + 'static,
     {
         let client = config.client.clone();
+        // 创建 NetworkManager
+        // NetworkManager会通过新生成的task启动discovery protocol
         let (handle, network, txpool, eth) = NetworkManager::builder(config)
             .await?
             .transactions(pool)
             .request_handler(client)
             .split_with_handle();
-
+        // 启动新任务
         task_executor.spawn_critical("p2p txpool", txpool);
+        // 启动新任务
         task_executor.spawn_critical("p2p eth request handler", eth);
 
         let known_peers_file = self.network.persistent_peers_file(default_peers_path);
