@@ -14,3 +14,8 @@ workspace = true
 [dependencies]
 # ethereum
 alloy-primitives.workspace = true
+
+# 用于开发,单元测试 这里需要指定features = rand,不然的话random()方法会报错
+[dev-dependencies]
+alloy-primitives = { workspace = true, features = ["rand"] }
+rand.workspace = true

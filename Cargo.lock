@@ -7314,6 +7314,7 @@ name = "reth-net-banlist"
 version = "1.0.0"
 dependencies = [
  "alloy-primitives",
+ "rand 0.8.5",
 ]
 
 [[package]]
