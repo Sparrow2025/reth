@@ -38,6 +38,7 @@ pub struct NodeRecord {
     /// UDP discovery port.
     pub udp_port: u16,
     /// Public key of the discovery service
+    /// PeerId是一个固定的512位
     pub id: PeerId,
 }
 
