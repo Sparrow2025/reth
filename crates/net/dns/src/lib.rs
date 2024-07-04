@@ -4,6 +4,7 @@
 //!
 //! - `serde` (default): Enable serde support
 //! - `test-utils`: Export utilities for testing
+//! 添加通过DNS进行节点发现的支持
 
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/paradigmxyz/reth/main/assets/reth-docs.png",
