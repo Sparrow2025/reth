@@ -1,4 +1,5 @@
 //! Helpers for resolving the external IP.
+//! 用户解析出外网IP
 //!
 //! ## Feature Flags
 //!
