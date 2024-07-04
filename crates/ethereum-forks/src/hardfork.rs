@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 #[cfg(not(feature = "std"))]
 use alloc::{format, string::String};
 
+/// 硬分叉和升级都在这里
 /// Represents the consensus type of a blockchain fork.
 ///
 /// This enum defines two variants: `ProofOfWork` for hardforks that use a proof-of-work consensus
